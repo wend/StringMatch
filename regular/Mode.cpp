@@ -8,17 +8,31 @@ Mode::Mode(string str, int min, int max, int type)
     ,mMin(min)
     ,mStr(str)
     ,mType(type)
+    ,mHasNext(true)
 {
-    mCurrentCharsIndex = new int[max];
-    for (int i = 0; i < max; i ++)
-    {
-        mCurrentCharsIndex[i] = mStr.size();
-        if (i < min)
-            mCurrentCharsIndex[i]--;
-    }
     mValues = new char[max+1];
     memset(mValues, 0, max+1);
-    mHasNext = true;
+    mCurrentCharsIndex = new int[max];
+    if (MODE_FIXED == mType)
+    {
+        memcpy(mValues, mStr.c_str(), mStr.size());
+    }
+    else
+    {
+       for (int i = 0; i < mMax; i ++)
+        {
+            if (i < mMin)
+            {
+                mCurrentCharsIndex[i] = mStr.size() - 1;
+                mValues[i] = mStr[mCurrentCharsIndex[i]];
+            }
+            else
+            {
+                mCurrentCharsIndex[i] = mStr.size();
+            }
+        }
+    }   
+    mRetStr = mValues;
 }
 
 
@@ -31,13 +45,28 @@ Mode::~Mode(void)
 
 void Mode::reset()
 {
-    for (int i = 0; i < mMax; i ++)
-    {
-        mCurrentCharsIndex[i] = mStr.size();
-        if (i < mMin)
-            mCurrentCharsIndex[i]--;
-    }
     mHasNext = true;
+    memset(mValues, 0, mMax+1);
+    if (MODE_FIXED == mType)
+    {
+        memcpy(mValues, mStr.c_str(), mStr.size());
+    }
+    else
+    {
+       for (int i = 0; i < mMax; i ++)
+        {
+            if (i < mMin)
+            {
+                mCurrentCharsIndex[i] = mStr.size() - 1;
+                mValues[i] = mStr[mCurrentCharsIndex[i]];
+            }
+            else
+            {
+                mCurrentCharsIndex[i] = mStr.size();
+            }
+        }
+    }    
+    mRetStr = mValues;
 }
 
 
@@ -46,36 +75,20 @@ bool Mode::hasNext()
     return mHasNext;
 }
 
-string Mode::getCurrentMatch()
+string& Mode::getCurrentMatch()
 {
-    if (MODE_FIXED == mType)
-    {
-        return mStr;
-    }
-    //string str;
-    for (int i = 0; i < mMax; i ++)
-    {
-        mValues[i] = mStr.c_str()[mCurrentCharsIndex[i]];
-        //if (mStr.c_str()[mCurrentCharsIndex[i]] != '\0')
-          //  str.append(1, mStr.c_str()[mCurrentCharsIndex[i]]);
-    }
-    return mValues;
+    return mRetStr;
 }
 
-string Mode::getNextMatch()
+string& Mode::getNextMatch()
 {
+    mRetStr = mValues;
     if (MODE_FIXED == mType)
     {
         mHasNext = false;
-        return mStr;
+        return mRetStr;
     }
-    //string str;
-    for (int i = 0; i < mMax; i ++)
-    {
-        mValues[i] = mStr.c_str()[mCurrentCharsIndex[i]];
-        //if (mStr.c_str()[mCurrentCharsIndex[i]] != '\0')
-          //  str.append(1, mStr.c_str()[mCurrentCharsIndex[i]]);
-    }
+
     for (int i = 0; i < mMax; i++)
     {
         mCurrentCharsIndex[i]--;
@@ -84,18 +97,20 @@ string Mode::getNextMatch()
             if (i == mMax -1)
             {
                 mHasNext = false;
-                return mValues;
+                break;
             }
             else
             {
                 mCurrentCharsIndex[i] = mStr.size() - 1;
+                mValues[i] = mStr[mCurrentCharsIndex[i]];
             }
         }
         else
         {
+            mValues[i] = mStr[mCurrentCharsIndex[i]];
             break;
         }
     }
-    mHasNext = true;
-    return mValues;
+    
+    return mRetStr;
 }

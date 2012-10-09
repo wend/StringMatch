@@ -9,9 +9,11 @@ using namespace std;
 
 #include "Mode.h"
 
-int main()
+int main(int argc, char*argv[])
 {
-    string reg = "[a-d]{0,2}1234[0-9]{1,2}";
+    string reg = argv[1];
+cout << "reg:"<<reg<<endl;
+cout << "output file:" << argv[2]<<endl;
     vector<Mode*> vec;
     while(true)
     {
@@ -38,7 +40,11 @@ int main()
         pos = reg.find("{");
         reg = reg.substr(pos + 1);
         int min = reg[0] - '0';
-        int max = reg[2] - '0';
+        int max = min;
+        if (reg[1] == ',')
+        {
+            max = reg[2] - '0';
+        }
         Mode *mode = new Mode(str, min, max, MODE_VARIABLE);
         vec.push_back(mode);
 
@@ -47,8 +53,11 @@ int main()
     }
 
     ofstream of;
-    of.open("d:\\test\\regular.txt", ios::out);
-
+    of.open(argv[2], ios::out);
+    if (!of.is_open())
+    {
+        cout << "open file error"<<endl;
+    }
     bool hasNext = true;
 
     while(hasNext)

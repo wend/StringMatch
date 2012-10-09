@@ -15,9 +15,9 @@ public:
     Mode(string str, int min, int max, int type);
     ~Mode(void);
     void reset();
-    string getNextMatch();
+    string& getNextMatch();
     bool hasNext();
-    string getCurrentMatch();
+    string& getCurrentMatch();
 
 public:
     string mStr;
@@ -27,6 +27,7 @@ public:
 
     int *mCurrentCharsIndex;
     char *mValues;
+    string mRetStr;
     bool mHasNext;
 };
 
