@@ -74,13 +74,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FixedMode.cpp" />
     <ClCompile Include="Mode.cpp" />
     <ClCompile Include="RegFormula.cpp" />
     <ClCompile Include="regular.cpp" />
+    <ClCompile Include="VariableMode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FixedMode.h" />
     <ClInclude Include="Mode.h" />
     <ClInclude Include="RegFormula.h" />
+    <ClInclude Include="VariableMode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

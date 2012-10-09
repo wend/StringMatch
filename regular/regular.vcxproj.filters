@@ -24,12 +24,24 @@
     <ClCompile Include="RegFormula.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FixedMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VariableMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RegFormula.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

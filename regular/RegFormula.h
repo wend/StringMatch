@@ -10,7 +10,10 @@ public:
     RegFormula(void);
     ~RegFormula(void);
     void addMode(Mode*);
+    
     static RegFormula* parse(string reg);
+    static vector<string> readFixedStr(string inputFile);
+
     string getNextMatch();
     inline bool hasNext(){return mHasNext;}
     inline long long getTotalCount(){return mRegStrCount;}

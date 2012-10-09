@@ -1,4 +1,9 @@
+#include <fstream>
+#include <iostream>
+#include "VariableMode.h"
+#include "FixedMode.h"
 #include "RegFormula.h"
+
 
 
 RegFormula::RegFormula(void)
@@ -23,6 +28,33 @@ void RegFormula::addMode(Mode*mode)
     mModes.push_back(mode);
 }
 
+vector<string> RegFormula::readFixedStr(string inputFile)
+{
+    vector<string> v;
+
+    ifstream file;
+    file.open(inputFile, std::ios::in);
+    if (!file.is_open())
+    {
+        cout << "open file error:" << inputFile<<endl;
+        return v;
+    }
+
+    char *tmp = new char[255];
+    while(!file.eof())
+    {
+        file.getline(tmp, 254);
+        if (strlen(tmp) == 0)
+        {
+            continue;
+        }
+        v.push_back(tmp);
+    }
+    delete tmp;
+
+    return v;
+}
+
 RegFormula* RegFormula::parse(string reg)
 {
     RegFormula* regFormula = new RegFormula();
@@ -36,18 +68,54 @@ RegFormula* RegFormula::parse(string reg)
         if (pos != 0)
         {
             string fixed_str = reg.substr(0, pos);
-            Mode *mode = new Mode(fixed_str, 0, 0, MODE_FIXED);
-            regFormula->addMode(mode);
+            if (fixed_str.find(".txt") != string::npos)
+            {
+                vector<string> v = readFixedStr(fixed_str);
+                if(v.size())
+                {
+                    Mode *mode = new FixedMode(v);
+                    regFormula->addMode(mode);
+                }
+            }
+            else
+            {
+                vector<string> v;
+                v.push_back(fixed_str);
+                Mode *mode = new FixedMode(v);
+                regFormula->addMode(mode);
+            }
         }
         reg = reg.substr(pos + 1);
+        pos = reg.find("]");
+        string subStr = reg.substr(0,pos);
         string str;
         char minChar = reg[0];
-        char maxChar = reg[2];
-        while(minChar <= maxChar)
+        for (int i = 0; i<subStr.length(); i++)
         {
-            str.append(1, minChar);
-            minChar++;
+            if(subStr[i] == '-')
+            {
+                while(minChar < subStr[i+1])
+                {
+                    minChar++;
+                    str.append(1, minChar);
+                }
+                i += 1;
+            }
+            else
+            {
+                minChar = subStr[i];
+                str.append(1, minChar);
+            }
         }
+        //char minChar = reg[0];
+        //char maxChar = reg[2];
+        //while(minChar <= maxChar)
+        //{
+        //    str.append(1, minChar);
+        //    minChar++;
+        //}
+
+
         pos = reg.find("{");
         reg = reg.substr(pos + 1);
         int min = reg[0] - '0';
@@ -56,7 +124,7 @@ RegFormula* RegFormula::parse(string reg)
         {
             max = reg[2] - '0';
         }
-        Mode *mode = new Mode(str, min, max, MODE_VARIABLE);
+        Mode *mode = new VariableMode(str, min, max, MODE_VARIABLE);
         regFormula->addMode(mode);
 
         pos = reg.find("}");
@@ -73,10 +141,10 @@ string RegFormula::getNextMatch()
         Mode *mode = mModes[i];
         mRegStr += mode->getCurrentMatch();
     }
-    for(int i = 0; i< mModes.size(); i++)
+    for(int i = mModes.size()-1; i>=0; i--)
     {
         Mode *mode = mModes[i];
-        mode->getNextMatch();
+        mode->gotoNextMatch();
         if(mode->hasNext())
         {
             break;
@@ -84,7 +152,7 @@ string RegFormula::getNextMatch()
         else
         {
             mode->reset();
-            if (i == mModes.size() - 1)
+            if (i == 0)
                 mHasNext = false;
         }
     }

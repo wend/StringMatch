@@ -30,6 +30,6 @@ int main(int argc, char*argv[])
     }
     of << regFormula->getTotalCount() <<endl;
     of.close();
-    
+
     return 0;
 }

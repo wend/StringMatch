@@ -12,23 +12,12 @@ enum
 class Mode
 {
 public:
-    Mode(string str, int min, int max, int type);
-    ~Mode(void);
-    void reset();
-    string& getNextMatch();
-    bool hasNext();
-    string& getCurrentMatch();
-
-public:
-    string mStr;
-    int mMin;
-    int mMax;
-    int mType;
-
-    int *mCurrentCharsIndex;
-    char *mValues;
-    string mRetStr;
-    bool mHasNext;
+    Mode(void);
+    virtual ~Mode(void) = 0;
+    virtual void reset() = 0;
+    virtual string& gotoNextMatch() = 0;
+    virtual bool hasNext() = 0;
+    virtual string& getCurrentMatch() = 0;
 };
 
 #endif //MODE_H
