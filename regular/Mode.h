@@ -30,4 +30,5 @@ public:
     bool mHasNext;
 };
 
-#endif MODE_H
+#endif //MODE_H
+
