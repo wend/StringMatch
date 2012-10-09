@@ -3,6 +3,7 @@
 #include "VariableMode.h"
 #include "FixedMode.h"
 #include "RegFormula.h"
+#include <string.h>
 
 
 
@@ -33,7 +34,7 @@ vector<string> RegFormula::readFixedStr(string inputFile)
     vector<string> v;
 
     ifstream file;
-    file.open(inputFile, std::ios::in);
+    file.open(inputFile.c_str(), std::ios::in);
     if (!file.is_open())
     {
         cout << "open file error:" << inputFile<<endl;

@@ -1,6 +1,6 @@
 #include "VariableMode.h"
-
-
+#include <string.h>
+#include <algorithm>
 VariableMode::VariableMode(string str, int min, int max, int type)
     :mCurrentCharsIndex(NULL)
     ,mMax(max)
