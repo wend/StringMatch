@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>"[a-zABCDO-R]{0,1}1234[0-9]{1,2}" "d:\\test\\regular.txt"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"[a-zABCDO-R]{0,1}1234&lt;matches.txt&gt;ab&lt;matches.txt&gt;[0-9]{1,2}" "d:\\test\\regular.txt"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

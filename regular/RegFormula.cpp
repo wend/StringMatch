@@ -69,21 +69,37 @@ RegFormula* RegFormula::parse(string reg)
         if (pos != 0)
         {
             string fixed_str = reg.substr(0, pos);
-            if (fixed_str.find(".txt") != string::npos)
+            while(fixed_str.length() > 0 )
             {
-                vector<string> v = readFixedStr(fixed_str);
-                if(v.size())
+                string::size_type pos1 = fixed_str.find("<");
+                string::size_type pos2 = fixed_str.find(">");
+                if (pos1 != string::npos)
                 {
+                    if (pos1 != 0)
+                    {
+                        string str = fixed_str.substr(0, pos1);
+                        vector<string> v;
+                        v.push_back(str);
+                        Mode *mode = new FixedMode(v);
+                        regFormula->addMode(mode);
+                    }
+                    string file = fixed_str.substr(pos1+1, pos2 - pos1 -1);
+                    vector<string> v = readFixedStr(file);
+                    if(v.size())
+                    {
+                        Mode *mode = new FixedMode(v);
+                        regFormula->addMode(mode);
+                    }
+                    fixed_str = fixed_str.substr(pos2 + 1);
+                }
+                else
+                {
+                    vector<string> v;
+                    v.push_back(fixed_str);
                     Mode *mode = new FixedMode(v);
                     regFormula->addMode(mode);
+                    break;
                 }
-            }
-            else
-            {
-                vector<string> v;
-                v.push_back(fixed_str);
-                Mode *mode = new FixedMode(v);
-                regFormula->addMode(mode);
             }
         }
         reg = reg.substr(pos + 1);
