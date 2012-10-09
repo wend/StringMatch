@@ -75,10 +75,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Mode.cpp" />
+    <ClCompile Include="RegFormula.cpp" />
     <ClCompile Include="regular.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mode.h" />
+    <ClInclude Include="RegFormula.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

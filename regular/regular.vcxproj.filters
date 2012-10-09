@@ -21,9 +21,15 @@
     <ClCompile Include="Mode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RegFormula.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegFormula.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

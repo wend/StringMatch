@@ -9,16 +9,17 @@ Mode::Mode(string str, int min, int max, int type)
     ,mStr(str)
     ,mType(type)
     ,mHasNext(true)
+    ,mValues(NULL)
 {
-    mValues = new char[max+1];
-    memset(mValues, 0, max+1);
-    mCurrentCharsIndex = new int[max];
     if (MODE_FIXED == mType)
     {
-        memcpy(mValues, mStr.c_str(), mStr.size());
+        mRetStr = mStr;
     }
     else
     {
+       mValues = new char[max+1];
+       memset(mValues, 0, max+1);
+       mCurrentCharsIndex = new int[max];
        for (int i = 0; i < mMax; i ++)
         {
             if (i < mMin)
@@ -31,29 +32,27 @@ Mode::Mode(string str, int min, int max, int type)
                 mCurrentCharsIndex[i] = mStr.size();
             }
         }
+        mRetStr = mValues;
     }   
-    mRetStr = mValues;
 }
 
 
 Mode::~Mode(void)
 {
-    delete mValues;
-    delete mCurrentCharsIndex;
+    if (mValues)
+        delete mValues;
+    if (mCurrentCharsIndex)
+        delete mCurrentCharsIndex;
 }
 
 
 void Mode::reset()
 {
     mHasNext = true;
-    memset(mValues, 0, mMax+1);
-    if (MODE_FIXED == mType)
+    if (MODE_FIXED != mType)
     {
-        memcpy(mValues, mStr.c_str(), mStr.size());
-    }
-    else
-    {
-       for (int i = 0; i < mMax; i ++)
+        memset(mValues, 0, mMax+1);
+        for (int i = 0; i < mMax; i ++)
         {
             if (i < mMin)
             {
@@ -65,8 +64,8 @@ void Mode::reset()
                 mCurrentCharsIndex[i] = mStr.size();
             }
         }
+        mRetStr = mValues;
     }    
-    mRetStr = mValues;
 }
 
 
@@ -82,7 +81,6 @@ string& Mode::getCurrentMatch()
 
 string& Mode::getNextMatch()
 {
-    mRetStr = mValues;
     if (MODE_FIXED == mType)
     {
         mHasNext = false;
@@ -111,6 +109,6 @@ string& Mode::getNextMatch()
             break;
         }
     }
-    
+    mRetStr = mValues;
     return mRetStr;
 }
