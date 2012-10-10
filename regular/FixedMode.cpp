@@ -1,12 +1,19 @@
 #include "FixedMode.h"
 
 
-FixedMode::FixedMode(vector<string> v)
-    :mCurrentIndex(0)
+FixedMode::FixedMode(vector<string> v, int min, int max)
+    :mCurrentStringIndex(0)
     ,mHasNext(true)
-    ,mEmptyStr("")
+    ,mRetStr("")
+    ,mMin(min)
+    ,mMax(max)
+    ,mCurrentStringCount(min)
 {
     mFixedStr = v;
+    for (int i = 0; i < min; i++)
+    {
+        mRetStr += mFixedStr[mCurrentStringIndex];
+    }
 }
 
 
@@ -17,16 +24,43 @@ FixedMode::~FixedMode(void)
 void FixedMode::reset()
 {
     mHasNext = true;
-    mCurrentIndex = 0;
+    mCurrentStringIndex = 0;
+    mCurrentStringCount = mMin;
+    for (int i = 0; i < mMin; i++)
+    {
+        mRetStr += mFixedStr[mCurrentStringIndex];
+    }
+}
+
+string& FixedMode::getCurrentMatch()
+{
+    return mRetStr;
 }
 
 string& FixedMode::gotoNextMatch()
 {
-    mCurrentIndex++;
-    if (mCurrentIndex >= mFixedStr.size())
+    mCurrentStringCount++;
+    if (mCurrentStringCount > mMax)
     {
-        mHasNext = false;
-        return mEmptyStr;
+        mRetStr = "";
+        mCurrentStringCount = mMin;
+        mCurrentStringIndex++;
+        if (mCurrentStringIndex >= mFixedStr.size())
+        {
+            mHasNext = false;
+            return mRetStr;
+        }
+        else
+        {
+            for (int i = 0; i < mMin; i++)
+            {
+                mRetStr += mFixedStr[mCurrentStringIndex];
+            }
+        }
     }
-    return mFixedStr[mCurrentIndex];
+    else
+    {
+        mRetStr += mFixedStr[mCurrentStringIndex];
+    }
+    return mRetStr;
 }

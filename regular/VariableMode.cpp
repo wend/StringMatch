@@ -86,6 +86,10 @@ string& VariableMode::gotoNextMatch()
             break;
         }
     }
+    if (mMin == mMax && mMin ==0)
+    {
+        mHasNext = false;
+    }
     mRetStr = mValues;
     reverse(mRetStr.begin(), mRetStr.end());
     return mRetStr;

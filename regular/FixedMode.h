@@ -9,17 +9,20 @@ using namespace std;
 class FixedMode:public Mode
 {
 public:
-    FixedMode(vector<string> v);
+    FixedMode(vector<string> v, int min, int max);
     ~FixedMode(void);
     virtual void reset();
     virtual string& gotoNextMatch();
-    virtual string& getCurrentMatch(){return mFixedStr[mCurrentIndex];};
+    virtual string& getCurrentMatch();
     bool hasNext(){return mHasNext;}
 private:
     vector<string> mFixedStr;
-    string mEmptyStr;
+    string mRetStr;
     bool mHasNext;
-    int mCurrentIndex;
+    int mCurrentStringIndex;
+    int mCurrentStringCount;
+    int mMin;
+    int mMax;
 };
 #endif
 

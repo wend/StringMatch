@@ -56,6 +56,97 @@ vector<string> RegFormula::readFixedStr(string inputFile)
     return v;
 }
 
+void RegFormula::parseFixedStr(string fixed_str, RegFormula* regFormula)
+{
+    while(fixed_str.length() > 0 )
+    {
+        string::size_type pos1 = fixed_str.find("<");
+        string::size_type pos2 = fixed_str.find(">");
+        if (pos1 != string::npos)
+        {
+            if (pos1 != 0)
+            {
+                string str = fixed_str.substr(0, pos1);
+                string::size_type pos3 = str.find("{");
+                if (pos3 != string::npos)
+                {
+                    string fixed_str1 = str.substr(0, pos3);
+                    str = str.substr(pos3+1);
+                    int min = str[0] - '0';
+                    int max = min;
+                    if (str[1] == ',')
+                    {
+                        max = str[2] - '0';
+                    }
+                    vector<string> v;
+                    v.push_back(fixed_str1);
+                    Mode *mode = new FixedMode(v, min, max);
+                    regFormula->addMode(mode);
+                }
+                else
+                {
+                    vector<string> v;
+                    v.push_back(str);
+                    Mode *mode = new FixedMode(v, 1, 1);
+                    regFormula->addMode(mode);
+                }
+
+            }
+            string file = fixed_str.substr(pos1+1, pos2 - pos1 -1);
+            vector<string> v = readFixedStr(file);
+            fixed_str = fixed_str.substr(pos2 + 1);
+            if(v.size())
+            {
+                if (fixed_str.find("{") != string::npos)
+                {
+                    fixed_str = fixed_str.substr(1);
+                    int min = fixed_str[0] - '0';
+                    int max = min;
+                    if (fixed_str[1] == ',')
+                    {
+                        max = fixed_str[2] - '0';
+                    }
+                    //fixed_str = fixed_str.substr(fixed_str.find("}") + 1);
+                    Mode *mode = new FixedMode(v, min, max);
+                    regFormula->addMode(mode);
+                }
+                else
+                {
+                    Mode *mode = new FixedMode(v, 1, 1);
+                    regFormula->addMode(mode);
+                }
+            }
+        }
+        else
+        {
+            string::size_type pos3 = fixed_str.find("{");
+            if (pos3 != string::npos)
+            {
+                string fixed_str1 = fixed_str.substr(0, pos3);
+                fixed_str = fixed_str.substr(pos3+1);
+                int min = fixed_str[0] - '0';
+                int max = min;
+                if (fixed_str[1] == ',')
+                {
+                    max = fixed_str[2] - '0';
+                }
+                vector<string> v;
+                v.push_back(fixed_str1);
+                fixed_str = fixed_str.substr(fixed_str.find("}") + 1);
+                Mode *mode = new FixedMode(v, min, max);
+                regFormula->addMode(mode);
+            }
+            else
+            {
+                vector<string> v;
+                v.push_back(fixed_str);
+                Mode *mode = new FixedMode(v, 1, 1);
+                regFormula->addMode(mode);
+            }
+        }
+    }
+}
+
 RegFormula* RegFormula::parse(string reg)
 {
     RegFormula* regFormula = new RegFormula();
@@ -64,43 +155,12 @@ RegFormula* RegFormula::parse(string reg)
         string::size_type pos = reg.find("[");
         if (pos == std::string::npos)
         {
+            parseFixedStr(reg, regFormula);
             break;
         }
-        if (pos != 0)
+        else if (pos != 0)
         {
-            string fixed_str = reg.substr(0, pos);
-            while(fixed_str.length() > 0 )
-            {
-                string::size_type pos1 = fixed_str.find("<");
-                string::size_type pos2 = fixed_str.find(">");
-                if (pos1 != string::npos)
-                {
-                    if (pos1 != 0)
-                    {
-                        string str = fixed_str.substr(0, pos1);
-                        vector<string> v;
-                        v.push_back(str);
-                        Mode *mode = new FixedMode(v);
-                        regFormula->addMode(mode);
-                    }
-                    string file = fixed_str.substr(pos1+1, pos2 - pos1 -1);
-                    vector<string> v = readFixedStr(file);
-                    if(v.size())
-                    {
-                        Mode *mode = new FixedMode(v);
-                        regFormula->addMode(mode);
-                    }
-                    fixed_str = fixed_str.substr(pos2 + 1);
-                }
-                else
-                {
-                    vector<string> v;
-                    v.push_back(fixed_str);
-                    Mode *mode = new FixedMode(v);
-                    regFormula->addMode(mode);
-                    break;
-                }
-            }
+            parseFixedStr(reg.substr(0, pos), regFormula);
         }
         reg = reg.substr(pos + 1);
         pos = reg.find("]");
